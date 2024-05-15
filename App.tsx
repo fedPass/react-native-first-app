@@ -5,55 +5,21 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
+import React, { useState } from 'react';
 import {
-  SafeAreaView,
+  Button,
+  FlatList,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   useColorScheme,
   View,
 } from 'react-native';
 
 import {
   Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -62,57 +28,91 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const [enteredText, setEnteredText] = useState('');
+  const [courseGoals, setCourseGoals] = useState<{text: string; id: string}[]>([]);
+
+  const goalInputHandler = (enteredText: string) => {
+    setEnteredText(enteredText);
+  }
+  
+  const addGoalHandler = () => {
+    setCourseGoals((currentCourseGoals) => [
+      ...currentCourseGoals,
+      {text: enteredText, id: Math.random().toString()}
+    ]);
+  }
+
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <View style={styles.appContainer}>
+      <View style={styles.inputContainer}>
+        <TextInput 
+          style={styles.textInput} 
+          placeholder='Aggiungi nuovo obiettivo'
+          onChangeText={goalInputHandler}
+        />
+        <Button 
+          title='Aggiungi obiettivo'
+          onPress={addGoalHandler}
+        />
+      </View>
+      <View style={styles.goalsContainer}>
+        {/* insert <View> inside .map() to correct IOS style IOS */}
+        {/* ScrollView is better for text content, because it renders all data together, and it's not good for long list of data */}
+        {/* <ScrollView>
+          {courseGoals.map((goal) => 
+          <View style={styles.goalItem} key={Math.random()}>
+            <Text style={styles.goalText}>{goal}</Text>
+          </View>)}
+        </ScrollView> */}
+        {/* FlatList instead renders only the element visible on screen. It doesn't need .map(). 
+        If it has a property 'key' unique it doesn't need another, otherwise we can use keyExtractor prop */}
+        <FlatList 
+          data={courseGoals} 
+          renderItem={(x) => {return (
+            <View style={styles.goalItem}>
+              <Text style={styles.goalText}>{x.item.text}</Text>
+            </View>
+          )}}
+          keyExtractor={(item, index) => {
+            return item.id
+          }}
+          alwaysBounceVertical={false}
+        />
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  appContainer: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    flex: 1
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  inputContainer: {
+    marginBottom: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: '#cccccc',
+    flex: 1
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  textInput: {
+    borderWidth: 1,
+    borderColor: '#cccccc',
+    marginBottom: 8,
+    padding: 8
   },
-  highlight: {
-    fontWeight: '700',
+  goalsContainer: {
+    flex: 5
   },
+  goalItem: {
+    backgroundColor: '#82cbed',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 8,
+  },
+  goalText: {
+    color: '#fff'
+  }
 });
 
 export default App;
