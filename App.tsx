@@ -22,6 +22,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 
 import GoalItem from './components/GoalItem';
+import GoalInput from './components/GoalInput';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -30,14 +31,9 @@ function App(): React.JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
-  const [enteredText, setEnteredText] = useState('');
   const [courseGoals, setCourseGoals] = useState<{text: string; id: string}[]>([]);
-
-  const goalInputHandler = (enteredText: string) => {
-    setEnteredText(enteredText);
-  }
   
-  const addGoalHandler = () => {
+  const addGoalHandler = (enteredText: string) => {
     setCourseGoals((currentCourseGoals) => [
       ...currentCourseGoals,
       {text: enteredText, id: Math.random().toString()}
@@ -46,17 +42,7 @@ function App(): React.JSX.Element {
 
   return (
     <View style={styles.appContainer}>
-      <View style={styles.inputContainer}>
-        <TextInput 
-          style={styles.textInput} 
-          placeholder='Aggiungi nuovo obiettivo'
-          onChangeText={goalInputHandler}
-        />
-        <Button 
-          title='Aggiungi obiettivo'
-          onPress={addGoalHandler}
-        />
-      </View>
+      <GoalInput onAddGoal={addGoalHandler}/>
       <View style={styles.goalsContainer}>
         {/* insert <View> inside .map() to correct IOS style IOS */}
         {/* ScrollView is better for text content, because it renders all data together, and it's not good for long list of data */}
@@ -87,12 +73,6 @@ const styles = StyleSheet.create({
   appContainer: {
     paddingTop: 50,
     paddingHorizontal: 16,
-    flex: 1
-  },
-  inputContainer: {
-    marginBottom: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#cccccc',
     flex: 1
   },
   textInput: {
