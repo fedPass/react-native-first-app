@@ -21,6 +21,8 @@ import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
 
+import GoalItem from './components/GoalItem';
+
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -68,10 +70,8 @@ function App(): React.JSX.Element {
         If it has a property 'key' unique it doesn't need another, otherwise we can use keyExtractor prop */}
         <FlatList 
           data={courseGoals} 
-          renderItem={(x) => {return (
-            <View style={styles.goalItem}>
-              <Text style={styles.goalText}>{x.item.text}</Text>
-            </View>
+          renderItem={(itemData) => {return (
+            <GoalItem item={itemData.item.text} />
           )}}
           keyExtractor={(item, index) => {
             return item.id
@@ -103,15 +103,6 @@ const styles = StyleSheet.create({
   },
   goalsContainer: {
     flex: 5
-  },
-  goalItem: {
-    backgroundColor: '#82cbed',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-  },
-  goalText: {
-    color: '#fff'
   }
 });
 
