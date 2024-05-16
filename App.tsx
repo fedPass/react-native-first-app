@@ -13,6 +13,7 @@ import {
   StyleSheet,
   useColorScheme,
   View,
+  StatusBar
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -51,41 +52,44 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <View style={styles.appContainer}>
-      <Button
-        title="Aggiungi nuovo"
-        color="#459AC2"
-        onPress={() => setIsModalVisible(true)}
-      />
-      <GoalInput 
-        onAddGoal={addGoalHandler} 
-        isModalVisible={isModalVisible} 
-        onCloseModal={closeModal}/>
-      <View style={styles.goalsContainer}>
-        {/* insert <View> inside .map() to correct IOS style IOS */}
-        {/* ScrollView is better for text content, because it renders all data together, and it's not good for long list of data */}
-        {/* <ScrollView>
-          {courseGoals.map((goal) => 
-          <View style={styles.goalItem} key={Math.random()}>
-            <Text style={styles.goalText}>{goal}</Text>
-          </View>)}
-        </ScrollView> */}
-        {/* FlatList instead renders only the element visible on screen. It doesn't need .map(). 
-        If it has a property 'key' unique it doesn't need another, otherwise we can use keyExtractor prop */}
-        <FlatList
-          data={courseGoals}
-          renderItem={itemData => {
-            return (
-              <GoalItem item={itemData.item} onDeleteItem={deleteGoalHandler} />
-            );
-          }}
-          keyExtractor={(item, index) => {
-            return item.id;
-          }}
-          alwaysBounceVertical={false}
+    <>
+      <StatusBar barStyle='light-content'/>
+      <View style={styles.appContainer}>
+        <Button
+          title="Aggiungi nuovo"
+          color="#459AC2"
+          onPress={() => setIsModalVisible(true)}
         />
+        <GoalInput 
+          onAddGoal={addGoalHandler} 
+          isModalVisible={isModalVisible} 
+          onCloseModal={closeModal}/>
+        <View style={styles.goalsContainer}>
+          {/* insert <View> inside .map() to correct IOS style IOS */}
+          {/* ScrollView is better for text content, because it renders all data together, and it's not good for long list of data */}
+          {/* <ScrollView>
+            {courseGoals.map((goal) => 
+            <View style={styles.goalItem} key={Math.random()}>
+              <Text style={styles.goalText}>{goal}</Text>
+            </View>)}
+          </ScrollView> */}
+          {/* FlatList instead renders only the element visible on screen. It doesn't need .map(). 
+          If it has a property 'key' unique it doesn't need another, otherwise we can use keyExtractor prop */}
+          <FlatList
+            data={courseGoals}
+            renderItem={itemData => {
+              return (
+                <GoalItem item={itemData.item} onDeleteItem={deleteGoalHandler} />
+              );
+            }}
+            keyExtractor={(item, index) => {
+              return item.id;
+            }}
+            alwaysBounceVertical={false}
+          />
+        </View>
       </View>
-    </View>
+    </>
   );
 }
 
@@ -94,6 +98,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     paddingHorizontal: 16,
     flex: 1,
+    backgroundColor: '#133F53'
   },
   textInput: {
     borderWidth: 1,
