@@ -40,6 +40,12 @@ function App(): React.JSX.Element {
     ]);
   }
 
+  const deleteGoalHandler = (id: string) => {
+    setCourseGoals((currentCourseGoal) => {
+      return currentCourseGoal.filter((goal) => goal.id !== id)
+    })
+  }
+
   return (
     <View style={styles.appContainer}>
       <GoalInput onAddGoal={addGoalHandler}/>
@@ -57,7 +63,10 @@ function App(): React.JSX.Element {
         <FlatList 
           data={courseGoals} 
           renderItem={(itemData) => {return (
-            <GoalItem item={itemData.item.text} />
+            <GoalItem 
+              item={itemData.item}
+              onDeleteItem={deleteGoalHandler}
+            />
           )}}
           keyExtractor={(item, index) => {
             return item.id
